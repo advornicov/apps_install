@@ -1,4 +1,4 @@
-# Install the OpenSSH Server
+### INSTALL OpenSSH Server  ###
 Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
 
 # Set Powershell as a default shell for OpenSSH server
@@ -14,9 +14,9 @@ Set-Service -Name sshd -StartupType 'Automatic'
 
 ### INSTALL PYTHON 3.11  ### 
 
-### Define variables   ###
-$url = "https://www.python.org/ftp/python/3.11.1/python-3.11.1-amd64.exe"
-$output = "C:/temp/python-3.11.1-amd64.exe"
+### Define variables for Python   ###
+$url_python = "https://www.python.org/ftp/python/3.11.1/python-3.11.1-amd64.exe"
+$output_python = "C:/temp/python-3.11.1-amd64.exe"
 
 ### Create a local directory called temp  ###
 New-Item -ItemType Directory -Force -Path C:/temp
@@ -25,7 +25,37 @@ New-Item -ItemType Directory -Force -Path C:/temp
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 ### Download Python executable ###
-Invoke-WebRequest -Uri $url -OutFile $output
+Invoke-WebRequest -Uri $url_python -OutFile $output_python
 
 ### Install Python application in a quiet mode ###
-& $output /quiet InstallAllUsers=1 PrependPath=1 Include_test=0 
+& $output_python /quiet InstallAllUsers=1 PrependPath=1 Include_test=0 
+
+#################################################################################################
+
+### INSTALL VIM 9.0 ###
+
+### Define variables for VIM   ###
+$url_vim = "https://github.com/vim/vim-win32-installer/releases/download/v9.0.1047/gvim_9.0.1047_x64_signed.exe"
+$output_vim = "C:/temp/gvim_9.0.1047_x64_signed.exe"
+
+
+### Force Powershell to use TLS 1.2   ###
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
+### Download Vim executable ###
+Invoke-WebRequest -Uri $url_vim -OutFile $output_vim
+
+### Install Vim application in a quiet mode ###
+& $output_vim /S
+
+### Get the config of the existing PATH   ###
+$oldpath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
+
+### Define the PATH for VIM editor   ###
+$newpath = “$oldpath;C:\Program Files\Vim\vim90\”
+
+### Append new config to the existing PATH   ###
+Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath
+
+### Restart SSHD to enable VIM over SSH  ###
+Restart-Service sshd
