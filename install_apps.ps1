@@ -1,17 +1,3 @@
-### INSTALL OpenSSH Server  ###
-Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
-
-# Set Powershell as a default shell for OpenSSH server
-New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -PropertyType String -Force
-
-# Start the sshd service
-Start-Service sshd
-
-# Set the startup mode for the OpenSSH to Automatic
-Set-Service -Name sshd -StartupType 'Automatic'
-
-################################################################################################
-
 ### INSTALL PYTHON 3.11  ### 
 
 ### Define variables for Python   ###
@@ -48,4 +34,16 @@ Invoke-WebRequest -Uri $url_vim -OutFile $output_vim
 ### Install Vim application in a quiet mode ###
 & $output_vim /S
 
+##################################################################################################
 
+### INSTALL OpenSSH Server  ###
+Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
+
+# Set Powershell as a default shell for OpenSSH server
+New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -PropertyType String -Force
+
+# Start the sshd service
+Start-Service sshd
+
+# Set the startup mode for the OpenSSH to Automatic
+Set-Service -Name sshd -StartupType 'Automatic'
