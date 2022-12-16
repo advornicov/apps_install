@@ -48,14 +48,4 @@ Invoke-WebRequest -Uri $url_vim -OutFile $output_vim
 ### Install Vim application in a quiet mode ###
 & $output_vim /S
 
-### Get the config of the existing PATH   ###
-$oldpath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
 
-### Define the PATH for VIM editor   ###
-$newpath = “$oldpath;C:\Program Files\Vim\vim90\”
-
-### Append new config to the existing PATH   ###
-Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath
-
-### Restart SSHD to enable VIM over SSH  ###
-Restart-Service sshd
