@@ -12,15 +12,6 @@ $partition = New-Partition -DiskNumber $disk.Number -UseMaximumSize -AssignDrive
 # Format the partition
 Format-Volume -Partition $partition -FileSystem NTFS -NewFileSystemLabel "Data" -Confirm:$false
 
-# Check the exit status and redirect output to a file
-if ($?) {
-    Write-Host "The data drive has been created successfully" -ForegroundColor Green
-    Set-Content -Path "$folderpath\\data_drive_creation.log" -Value "The data drive has been created successfully"
-} else {
-    Write-Host "The data drive has been created successfully" -ForegroundColor Red
-    Set-Content -Path "$folderpath\\data_drive_creation.log" -Value "The data drive has failed to create"
-}
-
 
 ######################################################################################################
 
@@ -92,12 +83,10 @@ Expand-Archive -Path $filepath -DestinationPath $extractedFolderPath -Force
 # Specify the path where Sqlpackage is installed
 $sqlpackagePath = "$folderpath\\sqlpackage"  # Adjust this path as needed
 
-# Add the Sqlpackage path to the user's environment variable
-$existingPath = [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::User)
+# Add the Sqlpackage path to the system-wide environment variable
+$existingPath = [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine)
 $updatedPath = "$existingPath;$sqlpackagePath"
-[Environment]::SetEnvironmentVariable("Path", $updatedPath, [EnvironmentVariableTarget]::User)
-
-Write-Host "Sqlpackage path added to user's environment variable."
+[Environment]::SetEnvironmentVariable("Path", $updatedPath, [EnvironmentVariableTarget]::Machine)
 
 # Check the exit status and redirect output to a file
 if ($?) {
@@ -142,12 +131,10 @@ Remove-Item -Path $subfolder.FullName
 # Specify the path where Azcopy is installed
 $azcopypackagePath = "$folderpath\\azcopy"  # Adjust this path as needed
 
-# Add the Azcopy path to the user's environment variable
-$existingPath = [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::User)
+# Add the Azcopy path to the system-wide environment variable
+$existingPath = [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine)
 $updatedPath = "$existingPath;$azcopypackagePath"
-[Environment]::SetEnvironmentVariable("Path", $updatedPath, [EnvironmentVariableTarget]::User)
-
-Write-Host "Azcopy path added to user's environment variable."
+[Environment]::SetEnvironmentVariable("Path", $updatedPath, [EnvironmentVariableTarget]::Machine)
 
 # Check the exit status and redirect output to a file
 if ($?) {
